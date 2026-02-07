@@ -1,0 +1,28 @@
+# Переменные окружения
+.env
+config.py
+config_telethon.py
+
+# Telethon session files
+*.session
+*.session-journal
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+.cursor/
+*.swp
+*.swo

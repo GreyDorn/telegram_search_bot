@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Документация
+*.md
+!README.md
+
+# Конфигурация (будет через переменные окружения)
+.env
+config.py
+
+# Временные файлы
+*.log
+*.tmp
+
+# Batch файлы
+*.bat

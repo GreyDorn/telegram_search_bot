@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  telegram-bot:
+    build: .
+    container_name: telegram_search_bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      # Сохраняем session файл между перезапусками
+      - ./bot_session.session:/app/bot_session.session
+      - ./bot_session.session-journal:/app/bot_session.session-journal
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
