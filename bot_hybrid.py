@@ -192,26 +192,19 @@ async def main():
         
         # Отправка каждого результата
         for i, result in enumerate(results[:10], 1):
-            # Создание превью
-            preview = result['text'][:config.PREVIEW_LENGTH]
-            if len(result['text']) > config.PREVIEW_LENGTH:
-                preview += "..."
+            # Полный текст без обрезки
+            full_text = result['text']
             
             # Форматирование даты
             date_str = result['date'].strftime('%d.%m.%Y %H:%M')
             
-            # Создание кнопок
-            buttons = []
-            if result['link']:
-                buttons.append([Button.url("📖 Читать полностью", result['link'])])
-            
             message_text = (
                 f"**Результат {i}** из канала {result['channel_title']}\n"
                 f"🕐 {date_str}\n\n"
-                f"{preview}"
+                f"{full_text}"
             )
             
-            await event.respond(message_text, buttons=buttons if buttons else None)
+            await event.respond(message_text)
         
         if len(results) > 10:
             await event.respond(
