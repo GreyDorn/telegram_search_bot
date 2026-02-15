@@ -156,7 +156,6 @@ async def main():
                 if channels_checked % 5 == 0:
                     await search_msg.edit(
                         f"🔍 Ищу '{query}'...\n"
-                        f"✅ Проверено: {channels_checked}/{len(config.CHANNELS)}\n"
                         f"📊 Найдено: {len(results)}"
                     )
                     
