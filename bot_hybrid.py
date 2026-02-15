@@ -122,6 +122,9 @@ async def main():
         channels_checked = 0
         errors = 0
         
+        # Разбиваем запрос на слова (для поиска по отдельным словам)
+        query_words = query.split()
+        
         # ПОИСК ЧЕРЕЗ USERBOT (может читать каналы)
         for channel in config.CHANNELS:
             try:
@@ -134,21 +137,29 @@ async def main():
                 
                 # Поиск по истории через UserBot
                 async for message in user_client.iter_messages(entity, limit=config.SEARCH_LIMIT):
-                    if message.text and query in message.text.lower():
-                        # Создание ссылки
-                        if channel_username:
-                            link = f"https://t.me/{channel_username}/{message.id}"
-                        else:
-                            link = None
+                    if message.text:
+                        message_lower = message.text.lower()
                         
-                        results.append({
-                            'channel': channel,
-                            'channel_title': channel_title,
-                            'message_id': message.id,
-                            'text': message.text,
-                            'date': message.date,
-                            'link': link
-                        })
+                        # Проверяем: есть ли полное совпадение или хотя бы одно слово
+                        full_match = query in message_lower
+                        word_match = any(word in message_lower for word in query_words) if len(query_words) > 1 else False
+                        
+                        if full_match or word_match:
+                            # Создание ссылки
+                            if channel_username:
+                                link = f"https://t.me/{channel_username}/{message.id}"
+                            else:
+                                link = None
+                            
+                            results.append({
+                                'channel': channel,
+                                'channel_title': channel_title,
+                                'message_id': message.id,
+                                'text': message.text,
+                                'date': message.date,
+                                'link': link,
+                                'match_type': 'full' if full_match else 'partial'  # Для сортировки
+                            })
                 
                 channels_checked += 1
                 
@@ -180,8 +191,8 @@ async def main():
             )
             return
         
-        # Сортировка по дате (новые первые)
-        results.sort(key=lambda x: x['date'], reverse=True)
+        # Сортировка: сначала полные совпадения, потом частичные, внутри по дате (новые первые)
+        results.sort(key=lambda x: (0 if x['match_type'] == 'full' else 1, -x['date'].timestamp()))
         
         # Отправка результатов
         await event.respond(
